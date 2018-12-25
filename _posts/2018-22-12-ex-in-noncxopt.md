@@ -5,7 +5,7 @@ date:   2018-12-22 03:00:26 +0530
 categories: non-convex-optimization
 ---
 
-These are my solutions of chapter 2 exercises of this wonderful [primer on non-convex optimization.][PrateekJain-book]
+These are my solutions of chapter 2 exercises of this wonderful [primer on non-convex optimization.][PrateekJainBook]
 
 ### Ex 2.1: Show that strong smoothness does not imply convexity by constructing a nonconvex function $$ f: R^p \rightarrow R $$ that is 1-SS
 
@@ -53,9 +53,39 @@ And, $$ r \lt \lvert z \rvert $$. This is a contradiction
 ### Ex 2.4. Show that a horizon-oblivious setting of $$\eta_t = \frac{1}{\sqrt{t}} $$ while executing the Projected Gradient Descent algorithm with a convex function with bounded gradients also ensures convergence.
 
 
-### Ex 2.5. Show that if $$ f : R^p \rightarrow R $$ is a strongly convex function that is differentiable, then there is a unique point $$ x^* \in R^p $$ that minimizes the function value $$f$$ i.e., $$ f(x^*) = $$ min$$_{x \in R^p} f(x)$$
+Define the potential function $$ \Phi_t = f(x^t) - f(x^\star) $$, where $$x^\star$$ is the minima. From convexity of $$f$$, we can upperbound $$\Phi_t$$.
 
 
+\begin{align} 
+\Phi_t &= f(x^t) - f(x^\star) \\\\ 
+&<= \langle \nabla f(x), x^t - x^\star \rangle \\\\ &<= \frac{1}{2\eta_t} \left( \Vert x^t - x^\star \Vert_2^2 + \eta_t^2G^2 - \Vert z^{t+1} - x^\star \Vert_2^2 \right)
+\end{align}
+
+where $$ z^{t+1} $$ is the projection of the update on $$x^t$$ onto the convex constraint set.
+
+We also know from the Projection Lemma, $$ \Vert z^{t+1} - x^\star \Vert_2^2 >= \Vert x^{t+1} - x^\star \Vert_2^2 $$
+
+So, $$ \Phi_t <= \frac{1}{2\eta_t} \left(\Vert x^{t} - x^\star \Vert_2^2 - \Vert x^{t+1} - x^\star \Vert_2^2 \right) + \frac{\eta_t G^2}{2}$$
+
+Refer Pg. 21 of [this book][PrateekJainBook].
+
+The above form doesn't allow for easy telescoping operation, so we will have to make some necessary assumptions for this. One such assumption can be on the diameter of the convex constraint set $$diam(X) <= D$$.
+
+\begin{align}
+\frac{1}{T}\sum_t \Phi_t \\\\
+&<= \frac{1}{2T}(\Vert x^\star \Vert_2^2 + \sum_{t=2}^{T} ( \Vert x^t - x^\star \Vert_2^2(\frac{1}{\eta_t} - \frac{1}{\eta_{t-1}}) + \eta_t G^2 ) \\\\ &<=  \frac{1}{2T}(\Vert x^\star \Vert_2^2 + \sum_{t=2}^{T} ( D^2(\frac{1}{\eta_t} - \frac{1}{\eta_{t-1}})) + \sum_{t=1}^T \eta_t G^2 )) \\\\ &<= \frac{1}{2T}(\Vert x^\star \Vert_2^2 + D^2(\frac{1}{\eta_T} - \frac{1}{\eta_{1}})) + \sum_{t=1}^T\eta_t G^2 )) \\\\ &<= \frac{1}{2T}(\Vert x^\star \Vert_2^2 + D^2(\sqrt{T} - 1)) + \sqrt{T}G^2 )) \\\\ &<= \frac{1}{2\sqrt{T}}(\frac{\Vert x^\star \Vert_2^2}{\sqrt{T}} + D^2 + G^2 )) 
+\end{align}
+
+(Using $$x^1 = 0$$, $$ \eta_1 = 1$$, $$\eta_T = \frac{1}{\sqrt{T}} $$, and $$\sum_{i=1}^{n}\frac{1}{\sqrt{i}} <= 2sqrt(n) - 1 $$ )
+
+
+### Ex 2.5. Show that if $$ f : R^p \rightarrow R $$ is a strongly convex function that is differentiable, then there is a unique point $$ x^* \in R^p $$ that minimizes the function value $$f$$ i.e., $$ f (x^*)$$ = min$$_{x \in R^p} f(x)$$
+
+Proof by Contradiction:
+Let $$x^ *$$ and $$y^*$$ be two points that minimize $$f$$, i.e. $$ f(x^*) = f(y^*) = f^* $$
+From strong convexity, $$ f(\theta x^* + (1-\theta)y^*) < \theta f(x^*) + (1-\theta)f(y^*) $$
+$$ = f* $$.
+This is a contradiction.
 
 ### Ex 2.6. Show that the set of sparse vectors $$B_0(s) \subset R^p $$ is non-convex for any $$s < p$$. What happens when $$s = p$$ ?
 
@@ -69,4 +99,4 @@ The sum of two singular matrices can be non-singular. So $$ B_{rank(r)} \subset 
 
 
 
-[PrateekJain-book]: http://www.prateekjain.org/publications/all_papers/JainK17_FTML.pdf
+[PrateekJainBook]: http://www.prateekjain.org/publications/all_papers/JainK17_FTML.pdf
