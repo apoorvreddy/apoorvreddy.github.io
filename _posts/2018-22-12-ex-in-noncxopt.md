@@ -93,10 +93,48 @@ Take $$ x_1 $$ s.t. $$ \Vert x_1 \Vert_0 = s$$ And the $$s$$ non zero elements a
 
 A convex sum of $$ x_1 $$ and $$ x_2 $$ is not in $$ B_0(s) \subset R^p $$, if $$ s < p $$. Thus $$ B_0(s) $$ is non-convex. $$B_0(p) $$ however is convex.
 
-###  Exercise 2.7. Show that $$ B_{rank(r)} \subseteq R_{n×n}$$, the set of $$n × n$$ matrices with rank at most $$r$$, is non-convex for any $$r < n$$. What happens when $$r = n$$ 
+###  Ex 2.7. Show that $$ B_{rank(r)} \subseteq R_{n×n}$$, the set of $$n × n$$ matrices with rank at most $$r$$, is non-convex for any $$r < n$$. What happens when $$r = n$$ 
 
 The sum of two singular matrices can be non-singular. So $$ B_{rank(r)} \subset R_{n×n} $$ is non-convex, for $$ r< n$$ and convex for $$ r = n$$.
 
+### Ex 2.9. Consider a least squares optimization problem with a strongly convex and smooth objective. Show that the condition number of this problem is equal to the condition number of the Hessian matrix of the objective function.
 
+Let the objective be
+
+\begin{align}
+f(w)  
+&= \frac{1}{2} (Xw - y)^T (Xw-y) \\\\ &= \frac{1}{2} (X(w-w^\star) + Xw^\star - y)^T (X(w-w^\star) + Xw^\star - y)
+\end{align}
+
+Let $$ Xw^\star - y = P $$ and $$ X(w-w^\star) = Q $$, where $$ w^\star = (X^TX)^{-1}X^Ty $$ is the minima.
+
+So,
+
+\begin{align}
+f(w) 
+&= \frac{1}{2}(Q + P)^T (Q + P) \\\\ &= \frac{1}{2}(Q^TQ + Q^TP + P^TQ) + \frac{1}{2}P^TP \\\\ &= \frac{1}{2}Q^TQ + \frac{1}{2}P^TP \\\\ &= \frac{1}{2}(w-w^\star)^TX^TX(w-w^\star) + f(w^\star)
+\end{align}
+
+
+So Hessian of the objective $$ H = \nabla^2 f(w) = X^TX $$. Condition number $$\kappa$$ of the hessian $$H$$ is $$\kappa = \frac{\lambda_1}{\lambda_n}$$, where $$\lambda_1$$ and $$\lambda_n$$ are the largest and smallest eigenvalues.
+
+From strong convexity and smoothness,
+
+$$ \frac{\alpha}{2} \Vert w - w^\star \Vert_2^2 <= f(w) - f(w^\star) <= \frac{\beta}{2} \Vert w - w^\star \Vert_2^2 $$
+
+So, 
+$$ \frac{f(w) - f(w^\star)}{\frac{\alpha}{2} \Vert w - w^\star \Vert_2^2} \in [1, \frac{\beta}{\alpha}]$$
+
+Simply put, 
+$$ \frac{v^THv}{\alpha v^Tv} \in [1, \frac{\beta}{\alpha}] $$, for any vector $$v$$.
+
+If $$v = v_n$$, where $$v_n$$ is the eigen-vector of the Hessian corresponding to $$\lambda_n$$, then, 
+
+\begin{align}
+\frac{v_n^THv_n}{\alpha v_n^Tv_n}
+&= \frac{v_n^T \lambda_n v_n}{\alpha v_n^T v_n} \\\\ &= \frac{\lambda_n}{\alpha} = 1
+\end{align}
+
+So $$ \lambda_n = \alpha $$. And, similarly, $$\lambda_1 = \beta$$
 
 [PrateekJainBook]: http://www.prateekjain.org/publications/all_papers/JainK17_FTML.pdf
