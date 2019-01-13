@@ -5,10 +5,7 @@ date:   2019-01-11 03:00:26 +0530
 categories: bayesian
 ---
 
-This article will attempt to introduce the topic of Bayesian Linear Regression. We will walk through the math and the code as well. The complete Jupyter notebook is available [here][Jupyter]. 
-
-In the end, I picked up Chris Bishop's awesome book [PRML][Bishop], went through chapters 2 and 3, and this article is essentially a summary of these chapters, with accompanying code.
-
+This article is essentially a summary of chapters 2 and 3 of Chris Bishop's awesome book [PRML][Bishop] and will attempt to introduce the topic of Bayesian Linear Regression. We will walk through the math in some detail. The Jupyter notebook is available [here][Jupyter].
 
 ### Bayes' Theorem
 
@@ -108,7 +105,7 @@ $$\Lambda_{aa} = \Sigma_{aa} - (\Sigma_{ab}\Sigma_{ab}^{-1}\Sigma_{ba})^{-1} \ta
 
 ### Linear Gaussian Models
 
-Before going into Bayesian Linear Regression, we will briefly digress and discuss Linear Gaussian Models, which will help us derive expressions for Bayesian Linear Regression.
+We will briefly digress and discuss Linear Gaussian Models, which will help us derive expressions for Bayesian Linear Regression.
 
 Let 
 
@@ -116,20 +113,17 @@ $$ p(x) = \mathcal{N} (x | \mu, \Lambda^{-1}) \tag{9}$$
 
 $$ p(y \vert x) = \mathcal{N} (y | Ax + b, L^{-1}) \tag{10}$$
 
-
 Let's define a joint distribution on $$w$$ and $$y$$. Define $$ z = \begin{bmatrix} w \\ y \end{bmatrix} $$
 
-\begin{eqnarray}
-\ln p(z) 
-&= \ln p(x) + \ln p(y \vert x) \\\\ &= -\frac{1}{2}(x - \mu)^T \Lambda (x-\mu) -\frac{1}{2}(y - Ax - b)^T L (y - Ax - b) + const
-\end{eqnarray}
+$$\begin{eqnarray}
+\ln p(z) &=& \ln p(x) + \ln p(y \vert x) \\ &=& -\frac{1}{2}(x - \mu)^T \Lambda (x-\mu) -\frac{1}{2}(y - Ax - b)^T L (y - Ax - b) + const
+\end{eqnarray}$$
 
 <b>2nd Order Terms</b>
 
 For the precision of $$z$$, we consider 2nd order terms in $$w$$ and $$y$$.
 
 $$ = -\frac{1}{2}x^T (\Lambda + xLx^T)x - \frac{1}{2}y^TLy + \frac{1}{2}y^TLAx + \frac{1}{2}x^TA^TLy = -\frac{1}{2} \begin{bmatrix} x \\ y \end{bmatrix}^T \begin{bmatrix} \Lambda + A^TLA & -A^TL \\ -LA & L \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} $$
-
 
 $$ = -\frac{1}{2}z^TRz $$, where $$ R = \begin{bmatrix} \Lambda + A^TLA & -A^TL \\ -LA & L \end{bmatrix} $$
 
@@ -148,7 +142,6 @@ $$ z^T R \mu_z = z^T \begin{bmatrix} \Lambda \mu - A^TLb \\ Lb \end{bmatrix} $$
 So,
 
 $$ \mu_z = R^{-1} \begin{bmatrix} \Lambda \mu - A^TLb \\ Lb \end{bmatrix} = \begin{bmatrix} \mu \\ A\mu - b \end{bmatrix}\tag{12} $$
-
 
 Now that we have the joint Gaussian distribution of $$x$$ and $$y$$ specified by $$\mu_z$$ and $$\Sigma_z$$, we can easily find the conditional distribution of $$ x \vert y $$.
 
@@ -170,7 +163,7 @@ $$\Sigma_y = R_{yy}^{-1} = L^{-1} + A\Lambda^{-1}A^T \tag{16}$$
 
 In the Bayesian setting of Linear Regression, we set a prior $$p(w)$$ over the weights $$w$$ and the objective is to learn the posterior distribution of $$w$$ given the likelihood $$ p(y \vert w, x) $$. 
 
-The likelihood is $$ p(y \vert w, x) = \mathcal{N}(y \vert w^Tx + b, \beta^{-1} )$$ is modeled here as a Gaussian distribution whose mean is given by the affine function $$ w^Tx + b $$ . Here $$\beta^{-1}$$ is the variance of irreducible noise in our model, which we are assuming to be fixed and known for the sake of simplicity. We choose a Gaussian prior on $$w$$ which is conjugate to the likelihood. As we have seen before, the posterior too will assume the same form as the prior, which is Gaussian. This allows for sequential learning.
+The likelihood is defined as $$ p(y \vert w, x) = \mathcal{N}(y \vert w^Tx + b, \beta^{-1} )$$. Here $$\beta^{-1}$$ is the variance of irreducible noise in our model, which we are assuming to be fixed and known for the sake of simplicity. We choose a Gaussian prior on $$w$$ which is conjugate to the likelihood. As we have seen before, the posterior too will assume the same form as the prior, which is Gaussian. This allows for sequential learning.
 
 $$ p(w) = \mathcal{N}(w \vert \mu_0, \Sigma_0) \tag{17}$$
 
@@ -191,7 +184,7 @@ The predictive distribution $$ p(\hat{y} \vert x, X, Y, \beta, \mu_0, \Sigma_0) 
 
 $$\begin{eqnarray}
 p(\hat{y} \vert X, Y, \beta, \mu_0, \Sigma_0) &=& \int p(\hat{y} \vert w, x, \beta) p(w \vert X, Y, \mu_0, \Sigma_0) dw \\ &=& \int \mathcal{N}(\hat{y} \vert w^Tx, \beta^{-1}) \mathcal{N}(w \vert \mu_N, S_N^{-1}) dw 
- \\ &=& \int \mathcal{N}(\hat{y} - w^Tx \vert 0, \beta^{-1}) \mathcal{N}(w \vert \mu_N, S_N^{-1}) dw \\ &=& \mathcal{N}(\hat{y} \vert m_N^Tx, \beta^{-1} + x^TS_N^{-1}x) \end{eqnarray} \tag{21}$$
+ \\ &=& \int \mathcal{N}(\hat{y} - w^Tx \vert 0, \beta^{-1}) \mathcal{N}(w \vert \mu_N, S_N^{-1}) dw \\ &=& \mathcal{N}(\hat{y} \vert m_N^Tx, \beta^{-1} + x^TS_Nx) \end{eqnarray} \tag{21}$$
 
 The above expression can be derived by simply substituting identities 15 and 16.
 
@@ -201,6 +194,12 @@ The above expression can be derived by simply substituting identities 15 and 16.
 The complete Jupyter notebook is [here][Jupyter].
 
 ![GIF](../assets/img/bayesian_linreg_giphy.gif)
+
+### References
+
+* Chapters 2 and 3, [Pattern Recognition and Machine Learning, Christopher Bishop][Bishop]
+
+* [Conjugate Bayesian analysis of the Gaussian distribution, Kevin Murphy](https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf)
 
 [Bishop]: http://users.isr.ist.utl.pt/~wurmd/Livros/school/Bishop%20-%20Pattern%20Recognition%20And%20Machine%20Learning%20-%20Springer%20%202006.pdf
 
