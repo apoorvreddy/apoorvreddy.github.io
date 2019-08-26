@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: post
 title:  "Random Fourier Features for Kernel Machines"
 date:   2019-08-24 03:00:26 +0530
 categories: kernel methods
